@@ -19,17 +19,12 @@ body{background:#111;font-family:'Courier New',monospace;overflow:hidden;
   cursor:grab;
 }
 #board.panning{cursor:grabbing;}
-
-#rope-canvas{position:absolute;top:0;left:0;width:100%;height:100%;
-             pointer-events:none;z-index:1;}
-
+#rope-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
 #scene{position:absolute;top:0;left:0;width:0;height:0;transform-origin:0 0;}
 
-/* ── CARTÕES ── */
 .card{position:absolute;cursor:move;z-index:10;touch-action:none;}
 .card:hover{z-index:50;filter:brightness(1.06);}
 .card:active{z-index:100;}
-
 .card-body{
   position:relative;padding:10px 11px 12px;
   border:2px solid rgba(0,0,0,.25);
@@ -53,25 +48,18 @@ body{background:#111;font-family:'Courier New',monospace;overflow:hidden;
   justify-content:center;font-size:20px;margin-bottom:5px;
   border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.05);}
 .card.itev .card-avatar{background:#12122a;border-color:#e94560;}
-
 .card-tipo{font-size:8px;font-weight:bold;text-transform:uppercase;
   letter-spacing:1px;color:#888;margin-bottom:3px;}
 .card.itev .card-tipo{color:#e94560;}
 .card.evidencia .card-tipo{color:#cc3333;}
-
-.card-nome{font-size:11.5px;font-weight:bold;line-height:1.3;
-  color:#1a1a2e;margin-bottom:4px;}
+.card-nome{font-size:11.5px;font-weight:bold;line-height:1.3;color:#1a1a2e;margin-bottom:4px;}
 .card.itev .card-nome{color:#fff;font-size:13px;}
-
-.card-cnpj{font-size:8px;color:#777;margin-bottom:5px;
-  font-family:'Courier New',monospace;word-break:break-all;}
+.card-cnpj{font-size:8px;color:#777;margin-bottom:5px;font-family:'Courier New',monospace;word-break:break-all;}
 .card.itev .card-cnpj{color:#aaa;}
-
 .card-info{font-size:9px;color:#333;line-height:1.6;}
 .card.itev .card-info{color:#ddd;}
 .card.evidencia .card-info{color:#990000;font-weight:bold;}
 .card.nota .card-info{color:#555;}
-
 .tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:3px;}
 .tag{font-size:8px;font-weight:bold;padding:2px 6px;border-radius:10px;
   letter-spacing:.4px;white-space:nowrap;}
@@ -81,54 +69,40 @@ body{background:#111;font-family:'Courier New',monospace;overflow:hidden;
 .tag.green {background:#3a9a5c;color:#fff;}
 .tag.dark  {background:#1a1a2e;color:#e94560;border:1px solid #e94560;}
 
-/* ── TOPBAR ── */
 #topbar{
   position:fixed;top:10px;left:50%;transform:translateX(-50%);
   background:rgba(10,5,2,.92);border:2px solid #e94560;
   padding:8px 24px;color:#e94560;font-size:13px;font-weight:bold;
   letter-spacing:2px;text-transform:uppercase;z-index:200;
-  box-shadow:0 0 24px rgba(233,69,96,.35);white-space:nowrap;
-  border-radius:2px;
+  box-shadow:0 0 24px rgba(233,69,96,.35);white-space:nowrap;border-radius:2px;
 }
 @media(max-width:600px){
   #topbar{font-size:10px;padding:6px 14px;letter-spacing:1px;
     max-width:92vw;white-space:normal;text-align:center;top:6px;}
 }
 
-/* ── HELP ── */
 #help{
   position:fixed;bottom:14px;left:14px;
   background:rgba(10,5,2,.88);border:1.5px solid #8B6418;
   padding:10px 14px;color:#ccc;font-size:11px;z-index:200;
-  border-radius:3px;line-height:2;min-width:180px;
+  border-radius:3px;line-height:2;
 }
 #help b{color:#e8c040;font-size:12px;}
-@media(max-width:600px){
-  #help{font-size:10px;padding:8px 11px;bottom:8px;left:8px;
-    line-height:1.9;}
-}
+@media(max-width:600px){#help{font-size:10px;padding:8px 11px;bottom:8px;left:8px;}}
 
-/* ── LEGENDA ── */
 #legend{
   position:fixed;bottom:14px;right:14px;
   background:rgba(10,5,2,.88);border:1.5px solid #8B6418;
   padding:10px 14px;color:#ccc;font-size:11px;z-index:200;
-  border-radius:3px;line-height:2;min-width:200px;
+  border-radius:3px;line-height:2;
 }
 #legend b{color:#e8c040;font-size:12px;}
-#legend .leg-row{display:flex;align-items:center;gap:8px;}
-#legend .leg-line{width:26px;height:3px;border-radius:2px;flex-shrink:0;}
-#legend .leg-dash{
-  width:26px;height:0;border-top:2px dashed;flex-shrink:0;
-}
-@media(max-width:600px){
-  #legend{font-size:10px;padding:8px 11px;bottom:8px;right:8px;
-    line-height:1.9;min-width:170px;}
-  #legend .leg-line,#legend .leg-dash{width:20px;}
-}
+#legend .lr{display:flex;align-items:center;gap:8px;margin:1px 0;}
+#legend .ll{width:24px;height:3px;border-radius:2px;flex-shrink:0;}
+#legend .ld{width:24px;height:0;border-top:2.5px dashed;flex-shrink:0;}
+@media(max-width:600px){#legend{font-size:10px;padding:8px 11px;bottom:8px;right:8px;}}
 
-@keyframes shake{0%,100%{transform:translate(0,0)}
-  25%{transform:translate(-2px,0)}75%{transform:translate(2px,0)}}
+@keyframes shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,0)}75%{transform:translate(2px,0)}}
 .card.collide{animation:shake .15s ease;}
 </style>
 </head>
@@ -142,17 +116,17 @@ body{background:#111;font-family:'Courier New',monospace;overflow:hidden;
   🖱 Arrastar fundo → panorâmica<br>
   ⚙ Scroll → zoom in/out<br>
   👆 Pinça → zoom (mobile)<br>
-  🔄 Duplo clique no fundo → resetar
+  🔄 2× clique no fundo → resetar
 </div>
 
 <div id="legend">
   <b>LEGENDA:</b>
-  <div class="leg-row"><div class="leg-line" style="background:#e94560"></div> Conexão operacional</div>
-  <div class="leg-row"><div class="leg-line" style="background:#4466cc"></div> Vínculo societário/WHOIS</div>
-  <div class="leg-row"><div class="leg-dash" style="border-color:#e8c040"></div> Registro simultâneo</div>
-  <div class="leg-row"><div class="leg-dash" style="border-color:#ffffff"></div> Infra compartilhada</div>
-  <div class="leg-row"><div class="leg-dash" style="border-color:#3a9a5c"></div> Banco emissor</div>
-  <div class="leg-row"><div class="leg-dash" style="border-color:#e08030"></div> Indício de ligação</div>
+  <div class="lr"><div class="ll" style="background:#e94560"></div>Conexão operacional</div>
+  <div class="lr"><div class="ll" style="background:#4466cc"></div>Vínculo societário/WHOIS</div>
+  <div class="lr"><div class="ld" style="border-color:#e8c040"></div>Registro simultâneo</div>
+  <div class="lr"><div class="ld" style="border-color:#ffffff"></div>Infra compartilhada</div>
+  <div class="lr"><div class="ld" style="border-color:#3a9a5c"></div>Banco emissor</div>
+  <div class="lr"><div class="ld" style="border-color:#e08030"></div>Indício de ligação</div>
 </div>
 
 <div id="board">
@@ -161,144 +135,95 @@ body{background:#111;font-family:'Courier New',monospace;overflow:hidden;
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-// DADOS
-// ═══════════════════════════════════════════════════
 const CARD_W = 178;
 
 const NODES = [
-  {id:'itev',type:'itev',emoji:'🧠',
-   nome:'ITEV',tipo_label:'EMPRESA-MÃE SUSPEITA',
-   cnpj:'CNPJ: 13.929.711/0001-97',
-   info:['Sócio: Osmar Alves Nascimento','Desde 2011 (14 anos)','2.466 recl. (6m)','★ dealAgain: 2,2% 🔴'],
-   tags:[{t:'MATRIZ',c:'red'},{t:'14 ANOS',c:'dark'}],
-   x:750,y:320},
+  // ── Pessoas (coluna esquerda) ──
+  {id:'jamilly',  type:'pessoa',  emoji:'👤', nome:'JAMILLY FIRMINO',          tipo_label:'PESSOA FÍSICA — RF+WHOIS', cnpj:'',
+   info:['Sócia-Admin: SESNAT','WHOIS sesnat.com.br','jamillyfirmino04@gmail.com','Reg: 20/05/2025'],
+   tags:[{t:'CONFIRMADA',c:'blue'}], x:58, y:123},
 
-  {id:'sesnat',type:'empresa',emoji:'💸',
-   nome:'SESNAT NACIONAL',tipo_label:'EMPRESA EMISSORA',
-   cnpj:'CNPJ: 52.370.136/0001-97',
-   info:['Sócia: Jamilly Firmino','BH/MG • Set/2023','1.616 recl. (6m)','Instagram: 0 posts 🔴'],
-   tags:[{t:'VPS COMUM',c:'red'},{t:'COWORKING',c:'orange'}],
-   x:330,y:140},
-
-  {id:'storehost',type:'empresa',emoji:'🌐',
-   nome:'STOREHOST BRASIL',tipo_label:'EMPRESA EMISSORA',
-   cnpj:'CNPJ: 49.003.392/0001-31',
-   info:['Sócia: Maria Eduarda S. Felipe','BH/MG • Dez/2022','3.850 recl. (6m) 🔴','dealAgain: 4,4%'],
-   tags:[{t:'VPS COMUM',c:'red'},{t:'CASO ESCOLA',c:'orange'}],
-   x:330,y:400},
-
-  {id:'speed',type:'empresa',emoji:'⚡',
-   nome:'SPEED TECNET / CLAVE',tipo_label:'EMPRESA EMISSORA',
-   cnpj:'CNPJ: 47.638.307/0001-86',
-   info:['Sócio: Leandro da Silva Rocha','SP • Ago/2022','3.341 recl. (6m)','4 nomes, 1 CNPJ 🔴'],
-   tags:[{t:'VPS COMUM',c:'red'},{t:'REBRANDING',c:'orange'}],
-   x:330,y:680},
-
-  {id:'sebracom',type:'empresa',emoji:'📋',
-   nome:'SEBRACOM EMPRESARIAL',tipo_label:'EMPRESA EMISSORA',
-   cnpj:'CNPJ: 37.536.531/0001-03',
-   info:['Admin: Ivete Lepinsk','SP • 2007 (18 anos)','8.494 recl. hist. 🔴','Imita SEBRAE'],
-   tags:[{t:'MAIS ANTIGA',c:'orange'},{t:'NOME ENGANOSO',c:'red'}],
-   x:1160,y:140},
-
-  {id:'bib',type:'empresa',emoji:'💼',
-   nome:'BIB SOLUÇÕES FINANCEIRAS',tipo_label:'EMPRESA EMISSORA',
-   cnpj:'CNPJ: 40.099.029/0001-97',
-   info:['SP • Dez/2020','141 recl. (6m)','Sócio não identificado','Banco Sofisa (único)'],
-   tags:[{t:'BANCO DIFERENTE',c:'blue'}],
-   x:1160,y:400},
-
-  {id:'colloca',type:'empresa',emoji:'👥',
-   nome:'COLLOCA RH',tipo_label:'EMPRESA EMISSORA',
-   cnpj:'CNPJ: 07.067.821/0001-94',
-   info:['Sócia: Cristina Colloca','SP • Out/2004','1.684 recl. (6m)','Ticket: R$1.287 🔴'],
-   tags:[{t:'TEL 4570 COMUM',c:'blue'}],
-   x:1160,y:680},
-
-  // Pessoas
-  {id:'jamilly',type:'pessoa',emoji:'👤',
-   nome:'JAMILLY FIRMINO',tipo_label:'PESSOA FÍSICA — RF+WHOIS',
-   cnpj:'',
-   info:['Sócia-Admin: SESNAT','WHOIS sesnat.com.br','jamillyfirmino04@gmail.com'],
-   tags:[{t:'CONFIRMADA',c:'blue'}],x:60,y:100},
-
-  {id:'mariaedu',type:'pessoa',emoji:'👤',
-   nome:'MARIA EDUARDA SCALIONI',tipo_label:'PESSOA FÍSICA — RF+WHOIS',
-   cnpj:'',
+  {id:'mariaedu', type:'pessoa',  emoji:'👤', nome:'MARIA EDUARDA SCALIONI',   tipo_label:'PESSOA FÍSICA — RF+WHOIS', cnpj:'',
    info:['Sócia-Admin: STOREHOST','WHOIS storehost.com.br','mariaeduardastorehost@gmail.com'],
-   tags:[{t:'CONFIRMADA',c:'blue'}],x:60,y:360},
+   tags:[{t:'CONFIRMADA',c:'blue'}], x:58, y:454},
 
-  {id:'leandro',type:'pessoa',emoji:'👤',
-   nome:'LEANDRO SILVA ROCHA',tipo_label:'PESSOA FÍSICA — RF+WHOIS',
-   cnpj:'',
+  {id:'leandro',  type:'pessoa',  emoji:'👤', nome:'LEANDRO SILVA ROCHA',      tipo_label:'PESSOA FÍSICA — RF+WHOIS', cnpj:'',
    info:['Sócio-Admin: SPEED TECNET','WHOIS speedtecnet.com.br','leandrotrnrocha@gmail.com'],
-   tags:[{t:'CONFIRMADA',c:'blue'}],x:60,y:620},
+   tags:[{t:'CONFIRMADA',c:'blue'}], x:58, y:807},
 
-  {id:'nelson',type:'pessoa',emoji:'❓',
-   nome:'NELSON MIYAHARA',tipo_label:'⚠ SEM CNPJ NA RF',
-   cnpj:'',
+  {id:'nelson',   type:'pessoa',  emoji:'❓', nome:'NELSON MIYAHARA',           tipo_label:'⚠ SEM CNPJ NA RF', cnpj:'',
    info:['WHOIS: claveinternet.com.br','nelsonmkma@gmail.com','NÃO encontrado na RF','→ Possível laranja/sócio oculto'],
-   tags:[{t:'IDENTIDADE OCULTA',c:'red'},{t:'PRIO. MP',c:'dark'}],
-   x:60,y:840},
+   tags:[{t:'IDENTIDADE OCULTA',c:'red'},{t:'PRIO. MP',c:'dark'}], x:58, y:1116},
 
-  {id:'osmar',type:'pessoa',emoji:'👤',
-   nome:'OSMAR ALVES NASCIMENTO',tipo_label:'OPERADOR CENTRAL',
-   cnpj:'',
-   info:['Sócio-Admin: ITEV','WHOIS itev.com.br','contato@itev.com.br','Operador desde 2011'],
-   tags:[{t:'OPERADOR CENTRAL',c:'dark'}],x:750,y:100},
-
-  {id:'ivete',type:'pessoa',emoji:'👤',
-   nome:'IVETE LEPINSK',tipo_label:'PESSOA FÍSICA — RF',
-   cnpj:'',
-   info:['Admin: SEBRACOM','Foro: Juiz de Fora/MG','Citada em processos'],
-   tags:[{t:'IDENTIFICADA',c:'blue'}],x:1360,y:80},
-
-  // Bancos
-  {id:'bradesco',type:'banco',emoji:'🏦',
-   nome:'BANCO BRADESCO S.A.',tipo_label:'BANCO EMISSOR',
-   cnpj:'',
-   info:['4 carteiras do grupo','Res. CMN 4.949/2021','Súm. 479 STJ resp. obj.','MED/MDE sem resultado'],
-   tags:[{t:'4 CARTEIRAS',c:'orange'},{t:'RESPONSÁVEL',c:'green'}],
-   x:750,y:900},
-
-  {id:'sofisa',type:'banco',emoji:'🏦',
-   nome:'BANCO SOFISA S.A.',tipo_label:'BANCO EMISSOR',
-   cnpj:'',
-   info:['Carteira: BIB Soluções','Único banco diferente'],
-   tags:[{t:'1 CARTEIRA',c:'green'}],x:1160,y:900},
-
-  // Evidências
-  {id:'vps',type:'evidencia',emoji:'🖥',
-   nome:'SERVIDOR VPS\n45.77.113.194',tipo_label:'EVIDÊNCIA TÉCNICA #1',
-   cnpj:'cloud.paineldehospedagem.com.br',
-   info:['SESNAT + STOREHOST','SPEED TECNET + CLAVE','Mesmo IP físico 🔴','→ PROVA MAIS FORTE'],
-   tags:[{t:'INFRA COMPARTILHADA',c:'red'}],x:560,y:490},
-
-  {id:'regdata',type:'evidencia',emoji:'📅',
-   nome:'REGISTRO SIMULTÂNEO\n20/05/2025',tipo_label:'EVIDÊNCIA TÉCNICA #2',
-   cnpj:'Registrador: HSTDOMAINS (Hostinger)',
-   info:['sesnat.com.br','storehost.com.br','NS: johnathan+sierra.cf'],
-   tags:[{t:'LANÇAMENTO EM LOTE',c:'red'}],x:330,y:270},
-
-  {id:'escola',type:'nota',emoji:'🏫',
-   nome:'CASO DA ESCOLA MUNICIPAL',tipo_label:'CASO GRAVE — mai/2026',
-   cnpj:'',
-   info:['"Sou presidente da APP\nda escola municipal —\nlevamos um golpe."','★ Dinheiro de pais de alunos','★ URL removida do RA'],
-   tags:[{t:'DINHEIRO PÚBLICO',c:'red'},{t:'EVIDÊNCIA REMOVIDA',c:'dark'}],
-   x:540,y:700},
-
-  {id:'zerada',type:'nota',emoji:'🏛',
-   nome:'CONTA SEM SALDO\nMED/MDE jan/2026',tipo_label:'EVIDÊNCIA FINANCEIRA',
-   cnpj:'',
-   info:['Vítima pagou R$754,69','Itaú abriu MED/MDE','Conta STOREHOST ZERADA','→ Valores transferidos imediatamente'],
-   tags:[{t:'CONTA LARANJA?',c:'red'}],x:540,y:870},
-
-  {id:'instagram',type:'nota',emoji:'📱',
-   nome:'ALIBI FALSO — INSTAGRAM',tipo_label:'PROVA DE MENTIRA',
-   cnpj:'',
+  // ── Topo centro ──
+  {id:'instagram',type:'nota',    emoji:'📱', nome:'ALIBI FALSO — INSTAGRAM',   tipo_label:'PROVA DE MENTIRA', cnpj:'',
    info:['@sesnat_nacional:','1 seguidor • 0 posts','Alegam captação via anúncios','→ MATEMATICAMENTE IMPOSSÍVEL'],
-   tags:[{t:'ALIBI REFUTADO',c:'red'}],x:330,y:20},
+   tags:[{t:'ALIBI REFUTADO',c:'red'}], x:443, y:42},
+
+  // ── Coluna centro-esquerda (emissoras BH) ──
+  {id:'sesnat',   type:'empresa', emoji:'💸', nome:'SESNAT NACIONAL',           tipo_label:'EMPRESA EMISSORA', cnpj:'CNPJ: 52.370.136/0001-97',
+   info:['Sócia: Jamilly Firmino','BH/MG • Set/2023','1.616 recl. (6m)','Instagram: 0 posts 🔴'],
+   tags:[{t:'VPS COMUM',c:'red'},{t:'COWORKING',c:'orange'}], x:330, y:256},
+
+  {id:'regdata',  type:'evidencia',emoji:'📅',nome:'REGISTRO SIMULTÂNEO\n20/05/2025', tipo_label:'EVIDÊNCIA TÉCNICA #2', cnpj:'Registrador: HSTDOMAINS (Hostinger)',
+   info:['sesnat.com.br','storehost.com.br','NS: johnathan+sierra.cf'],
+   tags:[{t:'LANÇAMENTO EM LOTE',c:'red'}], x:330, y:490},
+
+  {id:'storehost',type:'empresa', emoji:'🌐', nome:'STOREHOST BRASIL',          tipo_label:'EMPRESA EMISSORA', cnpj:'CNPJ: 49.003.392/0001-31',
+   info:['Sócia: Maria Eduarda S. Felipe','BH/MG • Dez/2022','3.850 recl. (6m) 🔴','dealAgain: 4,4%'],
+   tags:[{t:'VPS COMUM',c:'red'},{t:'CASO ESCOLA',c:'orange'}], x:330, y:740},
+
+  {id:'speed',    type:'empresa', emoji:'⚡', nome:'SPEED TECNET / CLAVE',      tipo_label:'EMPRESA EMISSORA', cnpj:'CNPJ: 47.638.307/0001-86',
+   info:['Sócio: Leandro da Silva Rocha','SP • Ago/2022','3.341 recl. (6m)','4 nomes, 1 CNPJ 🔴'],
+   tags:[{t:'VPS COMUM',c:'red'},{t:'REBRANDING',c:'orange'}], x:330, y:1080},
+
+  // ── Centro: Osmar → ITEV ──
+  {id:'osmar',    type:'pessoa',  emoji:'👤', nome:'OSMAR ALVES NASCIMENTO',    tipo_label:'OPERADOR CENTRAL', cnpj:'',
+   info:['Sócio-Admin: ITEV','WHOIS itev.com.br','contato@itev.com.br','Operador desde 2011'],
+   tags:[{t:'OPERADOR CENTRAL',c:'dark'}], x:733, y:100},
+
+  {id:'itev',     type:'itev',    emoji:'🧠', nome:'ITEV',                      tipo_label:'EMPRESA-MÃE SUSPEITA', cnpj:'CNPJ: 13.929.711/0001-97',
+   info:['Sócio: Osmar Alves Nascimento','Desde 2011 (14 anos)','2.466 recl. (6m)','★ dealAgain: 2,2% 🔴'],
+   tags:[{t:'MATRIZ',c:'red'},{t:'14 ANOS',c:'dark'}], x:703, y:340},
+
+  // ── Centro-baixo: evidências ──
+  {id:'vps',      type:'evidencia',emoji:'🖥', nome:'SERVIDOR VPS\n45.77.113.194', tipo_label:'EVIDÊNCIA TÉCNICA #1', cnpj:'cloud.paineldehospedagem.com.br',
+   info:['SESNAT + STOREHOST','SPEED TECNET + CLAVE','Mesmo IP físico 🔴','→ PROVA MAIS FORTE'],
+   tags:[{t:'INFRA COMPARTILHADA',c:'red'}], x:875, y:640},
+
+  {id:'escola',   type:'nota',    emoji:'🏫', nome:'CASO DA ESCOLA MUNICIPAL',  tipo_label:'CASO GRAVE — mai/2026', cnpj:'',
+   info:['"Sou presidente da APP\nda escola municipal —\nlevamos um golpe."','★ Dinheiro de pais de alunos','★ URL removida do RA'],
+   tags:[{t:'DINHEIRO PÚBLICO',c:'red'},{t:'EVIDÊNCIA REMOVIDA',c:'dark'}], x:542, y:860},
+
+  {id:'zerada',   type:'nota',    emoji:'🏛', nome:'CONTA SEM SALDO\nMED/MDE jan/2026', tipo_label:'EVIDÊNCIA FINANCEIRA', cnpj:'',
+   info:['Vítima pagou R$754,69','Itaú abriu MED/MDE','Conta STOREHOST ZERADA','→ Valores transferidos imediatamente'],
+   tags:[{t:'CONTA LARANJA?',c:'red'}], x:542, y:1110},
+
+  // ── Banco Bradesco (baixo centro) ──
+  {id:'bradesco', type:'banco',   emoji:'🏦', nome:'BANCO BRADESCO S.A.',       tipo_label:'BANCO EMISSOR', cnpj:'',
+   info:['4 carteiras do grupo','Res. CMN 4.949/2021','Súm. 479 STJ resp. obj.','MED/MDE sem resultado'],
+   tags:[{t:'4 CARTEIRAS',c:'orange'},{t:'RESPONSÁVEL',c:'green'}], x:821, y:1110},
+
+  // ── Coluna direita: Ivete, emissoras SP, sofisa ──
+  {id:'ivete',    type:'pessoa',  emoji:'👤', nome:'IVETE LEPINSK',             tipo_label:'PESSOA FÍSICA — RF', cnpj:'',
+   info:['Admin: SEBRACOM','Foro: Juiz de Fora/MG','Citada em processos'],
+   tags:[{t:'IDENTIFICADA',c:'blue'}], x:1150, y:100},
+
+  {id:'sebracom', type:'empresa', emoji:'📋', nome:'SEBRACOM EMPRESARIAL',      tipo_label:'EMPRESA EMISSORA', cnpj:'CNPJ: 37.536.531/0001-03',
+   info:['Admin: Ivete Lepinsk','SP • 2007 (18 anos)','8.494 recl. hist. 🔴','Imita SEBRAE'],
+   tags:[{t:'MAIS ANTIGA',c:'orange'},{t:'NOME ENGANOSO',c:'red'}], x:1150, y:330},
+
+  {id:'bib',      type:'empresa', emoji:'💼', nome:'BIB SOLUÇÕES FINANCEIRAS',  tipo_label:'EMPRESA EMISSORA', cnpj:'CNPJ: 40.099.029/0001-97',
+   info:['SP • Dez/2020','141 recl. (6m)','Sócio não identificado','Banco Sofisa (único)'],
+   tags:[{t:'BANCO DIFERENTE',c:'blue'}], x:1150, y:620},
+
+  {id:'colloca',  type:'empresa', emoji:'👥', nome:'COLLOCA RH',                tipo_label:'EMPRESA EMISSORA', cnpj:'CNPJ: 07.067.821/0001-94',
+   info:['Sócia: Cristina Colloca','SP • Out/2004','1.684 recl. (6m)','Ticket: R$1.287 🔴'],
+   tags:[{t:'TEL 4570 COMUM',c:'blue'}], x:1150, y:890},
+
+  {id:'sofisa',   type:'banco',   emoji:'🏦', nome:'BANCO SOFISA S.A.',         tipo_label:'BANCO EMISSOR', cnpj:'',
+   info:['Carteira: BIB Soluções','Único banco diferente'],
+   tags:[{t:'1 CARTEIRA',c:'green'}], x:1150, y:1110},
 ];
 
 const EDGES = [
@@ -329,328 +254,253 @@ const EDGES = [
   {a:'instagram',b:'sesnat',    color:'#cc3333',dash:false,w:2,  label:'alibi falso'},
 ];
 
-// ═══════════════════════════════════════════════════
-// ESTADO
-// ═══════════════════════════════════════════════════
-let zoom = 0.68, panX = 0, panY = 0;
-const pos   = {};
-const sizes = {};
-NODES.forEach(n => { pos[n.id] = {x:n.x, y:n.y}; });
+// ═══════════════════ ESTADO ═══════════════════════
+let zoom = 0.65, panX = 0, panY = 0;
+const pos={}, sizes={};
+NODES.forEach(n=>{pos[n.id]={x:n.x,y:n.y};});
 
-// ═══════════════════════════════════════════════════
-// DOM — criar cartões
-// ═══════════════════════════════════════════════════
-const board  = document.getElementById('board');
-const scene  = document.getElementById('scene');
-const canvas = document.getElementById('rope-canvas');
-const ctx    = canvas.getContext('2d');
+// ═══════════════════ DOM ══════════════════════════
+const board   = document.getElementById('board');
+const scene   = document.getElementById('scene');
+const canvas  = document.getElementById('rope-canvas');
+const ctx     = canvas.getContext('2d');
 const cardEls = {};
 
-NODES.forEach(n => {
-  const div = document.createElement('div');
-  div.className = `card ${n.type}`;
-  div.id = 'card_' + n.id;
-  div.style.cssText = `left:${n.x}px;top:${n.y}px;width:${CARD_W}px;`;
-
-  const tagsHtml = (n.tags||[]).map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('');
-  div.innerHTML = `
-    <div class="card-body">
-      <div class="card-avatar">${n.emoji}</div>
-      <div class="card-tipo">${n.tipo_label}</div>
-      <div class="card-nome">${n.nome.replace(/\n/g,'<br>')}</div>
-      ${n.cnpj?`<div class="card-cnpj">${n.cnpj}</div>`:''}
-      <div class="card-info">${n.info.join('<br>').replace(/\n/g,'<br>')}</div>
-      <div class="tags">${tagsHtml}</div>
-    </div>`;
-
+NODES.forEach(n=>{
+  const div=document.createElement('div');
+  div.className=`card ${n.type}`;
+  div.id='card_'+n.id;
+  div.style.cssText=`left:${n.x}px;top:${n.y}px;width:${CARD_W}px;`;
+  const tags=(n.tags||[]).map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('');
+  div.innerHTML=`<div class="card-body">
+    <div class="card-avatar">${n.emoji}</div>
+    <div class="card-tipo">${n.tipo_label}</div>
+    <div class="card-nome">${n.nome.replace(/\n/g,'<br>')}</div>
+    ${n.cnpj?`<div class="card-cnpj">${n.cnpj}</div>`:''}
+    <div class="card-info">${n.info.join('<br>').replace(/\n/g,'<br>')}</div>
+    <div class="tags">${tags}</div>
+  </div>`;
   scene.appendChild(div);
-  cardEls[n.id] = div;
+  cardEls[n.id]=div;
 });
 
 function measureSizes(){
   NODES.forEach(n=>{
-    const el = cardEls[n.id];
-    sizes[n.id] = {w: el.offsetWidth, h: el.offsetHeight};
+    sizes[n.id]={w:cardEls[n.id].offsetWidth, h:cardEls[n.id].offsetHeight};
   });
 }
 
-// ═══════════════════════════════════════════════════
-// COLISÃO
-// ═══════════════════════════════════════════════════
-const PAD = 10;
-function resolveCollision(id, nx, ny){
-  const sw = sizes[id]?.w||CARD_W, sh = sizes[id]?.h||160;
+// ═══════════════════ CENTRAR ══════════════════════
+function centerLayout(){
+  // Bounding box de todos os cards
+  let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
+  NODES.forEach(n=>{
+    const w=sizes[n.id]?.w||CARD_W, h=sizes[n.id]?.h||160;
+    minX=Math.min(minX,n.x); minY=Math.min(minY,n.y);
+    maxX=Math.max(maxX,n.x+w); maxY=Math.max(maxY,n.y+h);
+  });
+  const layoutW=maxX-minX, layoutH=maxY-minY;
+  const vpW=window.innerWidth, vpH=window.innerHeight;
+  // Ajusta zoom para que o layout caiba na tela com margem
+  const zoomFit=Math.min(0.9, (vpW*0.88)/layoutW, (vpH*0.82)/layoutH);
+  zoom=zoomFit;
+  // Centraliza
+  panX=(vpW-(layoutW+minX*2)*zoom)/2;
+  panY=(vpH-(layoutH+minY*2)*zoom)/2 + 10;
+  applyTransform();
+}
+
+// ═══════════════════ COLISÃO ══════════════════════
+const PAD=10;
+function resolveCollision(id,nx,ny){
+  const sw=sizes[id]?.w||CARD_W, sh=sizes[id]?.h||160;
   for(const oid in pos){
     if(oid===id) continue;
-    const ox=pos[oid].x, oy=pos[oid].y;
     const ow=sizes[oid]?.w||CARD_W, oh=sizes[oid]?.h||160;
-    const overlapX = (sw/2+ow/2+PAD) - Math.abs((nx+sw/2)-(ox+ow/2));
-    const overlapY = (sh/2+oh/2+PAD) - Math.abs((ny+sh/2)-(oy+oh/2));
-    if(overlapX>0 && overlapY>0){
-      const cx1=nx+sw/2, cy1=ny+sh/2, cx2=ox+ow/2, cy2=oy+oh/2;
-      const dx=cx1-cx2||0.01, dy=cy1-cy2||0.01;
-      if(overlapX<overlapY) nx += dx>0 ? overlapX : -overlapX;
-      else                  ny += dy>0 ? overlapY : -overlapY;
+    const ox=pos[oid].x, oy=pos[oid].y;
+    const ovX=(sw/2+ow/2+PAD)-Math.abs((nx+sw/2)-(ox+ow/2));
+    const ovY=(sh/2+oh/2+PAD)-Math.abs((ny+sh/2)-(oy+oh/2));
+    if(ovX>0&&ovY>0){
+      const dx=(nx+sw/2)-(ox+ow/2)||0.01;
+      const dy=(ny+sh/2)-(oy+oh/2)||0.01;
+      if(ovX<ovY) nx+=dx>0?ovX:-ovX;
+      else        ny+=dy>0?ovY:-ovY;
       cardEls[oid].classList.add('collide');
       setTimeout(()=>cardEls[oid].classList.remove('collide'),200);
     }
   }
-  return {x:nx,y:ny};
+  return{x:nx,y:ny};
 }
 
-function moveTo(id,nx,ny,checkCol){
-  if(checkCol){const r=resolveCollision(id,nx,ny);nx=r.x;ny=r.y;}
+function moveTo(id,nx,ny,col){
+  if(col){const r=resolveCollision(id,nx,ny);nx=r.x;ny=r.y;}
   pos[id]={x:nx,y:ny};
   cardEls[id].style.left=nx+'px';
   cardEls[id].style.top =ny+'px';
 }
 
-// ═══════════════════════════════════════════════════
-// DRAG — CARTÃO (mouse + touch)
-// ═══════════════════════════════════════════════════
-let dragState = null;
+// ═══════════════════ DRAG (mouse+touch) ═══════════
+let dragState=null, panState=null, pinchState=null;
 
-function startCardDrag(id, clientX, clientY){
-  dragState = {
-    id,
-    ox: (clientX - panX)/zoom - pos[id].x,
-    oy: (clientY - panY)/zoom - pos[id].y,
-  };
-  cardEls[id].style.zIndex = 100;
+function startDrag(id,cx,cy){
+  dragState={id, ox:(cx-panX)/zoom-pos[id].x, oy:(cy-panY)/zoom-pos[id].y};
+  cardEls[id].style.zIndex=100;
 }
 
 NODES.forEach(n=>{
-  const el = cardEls[n.id];
-  // Mouse
-  el.addEventListener('mousedown', e=>{
-    if(e.button!==0) return;
-    e.stopPropagation();
-    startCardDrag(n.id, e.clientX, e.clientY);
-    e.preventDefault();
+  const el=cardEls[n.id];
+  el.addEventListener('mousedown',e=>{
+    if(e.button!==0)return; e.stopPropagation();
+    startDrag(n.id,e.clientX,e.clientY); e.preventDefault();
   });
-  // Touch
-  el.addEventListener('touchstart', e=>{
+  el.addEventListener('touchstart',e=>{
     e.stopPropagation();
-    const t = e.touches[0];
-    startCardDrag(n.id, t.clientX, t.clientY);
+    startDrag(n.id,e.touches[0].clientX,e.touches[0].clientY);
     e.preventDefault();
   },{passive:false});
 });
 
-// ═══════════════════════════════════════════════════
-// PAN — FUNDO (mouse + touch)
-// ═══════════════════════════════════════════════════
-let panState  = null;
-let pinchState = null; // para pinch zoom
-
-board.addEventListener('mousedown', e=>{
-  if(e.button!==0) return;
-  panState = {ox: e.clientX-panX, oy: e.clientY-panY};
+board.addEventListener('mousedown',e=>{
+  if(e.button!==0)return;
+  panState={ox:e.clientX-panX,oy:e.clientY-panY};
   board.classList.add('panning');
 });
-
-board.addEventListener('touchstart', e=>{
+board.addEventListener('touchstart',e=>{
   if(e.touches.length===2){
-    // Pinch zoom
-    const t0=e.touches[0], t1=e.touches[1];
-    const dist = Math.hypot(t1.clientX-t0.clientX, t1.clientY-t0.clientY);
-    const mx=(t0.clientX+t1.clientX)/2, my=(t0.clientY+t1.clientY)/2;
-    pinchState={dist,mx,my,zoom,panX,panY};
+    const t0=e.touches[0],t1=e.touches[1];
+    pinchState={dist:Math.hypot(t1.clientX-t0.clientX,t1.clientY-t0.clientY),
+      mx:(t0.clientX+t1.clientX)/2,my:(t0.clientY+t1.clientY)/2,zoom,panX,panY};
     panState=null;
-  } else if(e.touches.length===1){
-    const t=e.touches[0];
-    panState={ox:t.clientX-panX, oy:t.clientY-panY};
+  }else{
+    panState={ox:e.touches[0].clientX-panX,oy:e.touches[0].clientY-panY};
     pinchState=null;
   }
 },{passive:false});
 
-// ═══════════════════════════════════════════════════
-// MOVE GLOBAL
-// ═══════════════════════════════════════════════════
-function handleMove(clientX, clientY){
+function handleMove(cx,cy){
   if(dragState){
-    const nx = (clientX-panX)/zoom - dragState.ox;
-    const ny = (clientY-panY)/zoom - dragState.oy;
-    moveTo(dragState.id, nx, ny, true);
-    draw();
-    return;
+    moveTo(dragState.id,(cx-panX)/zoom-dragState.ox,(cy-panY)/zoom-dragState.oy,true);
+    draw(); return;
   }
-  if(panState){
-    panX = clientX - panState.ox;
-    panY = clientY - panState.oy;
-    applyTransform();
-  }
+  if(panState){panX=cx-panState.ox;panY=cy-panState.oy;applyTransform();}
 }
 
-window.addEventListener('mousemove', e=> handleMove(e.clientX, e.clientY));
-
-window.addEventListener('touchmove', e=>{
+window.addEventListener('mousemove',e=>handleMove(e.clientX,e.clientY));
+window.addEventListener('touchmove',e=>{
   e.preventDefault();
-  if(dragState && e.touches.length===1){
-    const t=e.touches[0];
-    handleMove(t.clientX, t.clientY);
-    return;
+  if(dragState&&e.touches.length===1){handleMove(e.touches[0].clientX,e.touches[0].clientY);return;}
+  if(e.touches.length===2&&pinchState){
+    const t0=e.touches[0],t1=e.touches[1];
+    const dist=Math.hypot(t1.clientX-t0.clientX,t1.clientY-t0.clientY);
+    const mx=(t0.clientX+t1.clientX)/2,my=(t0.clientY+t1.clientY)/2;
+    const f=dist/pinchState.dist;
+    zoom=Math.min(3,Math.max(0.15,pinchState.zoom*f));
+    panX=mx-(pinchState.mx-pinchState.panX)*(zoom/pinchState.zoom);
+    panY=my-(pinchState.my-pinchState.panY)*(zoom/pinchState.zoom);
+    applyTransform(); return;
   }
-  if(e.touches.length===2 && pinchState){
-    const t0=e.touches[0], t1=e.touches[1];
-    const dist = Math.hypot(t1.clientX-t0.clientX, t1.clientY-t0.clientY);
-    const mx=(t0.clientX+t1.clientX)/2, my=(t0.clientY+t1.clientY)/2;
-    const factor = dist/pinchState.dist;
-    const newZoom = Math.min(3, Math.max(0.15, pinchState.zoom*factor));
-    panX = mx - (pinchState.mx - pinchState.panX)*(newZoom/pinchState.zoom);
-    panY = my - (pinchState.my - pinchState.panY)*(newZoom/pinchState.zoom);
-    zoom = newZoom;
-    applyTransform();
-    return;
-  }
-  if(e.touches.length===1 && panState){
-    const t=e.touches[0];
-    panX = t.clientX - panState.ox;
-    panY = t.clientY - panState.oy;
+  if(e.touches.length===1&&panState){
+    panX=e.touches[0].clientX-panState.ox;
+    panY=e.touches[0].clientY-panState.oy;
     applyTransform();
   }
 },{passive:false});
 
 function endAll(){
-  if(dragState){ cardEls[dragState.id].style.zIndex=10; dragState=null; }
-  panState=null; pinchState=null;
-  board.classList.remove('panning');
+  if(dragState){cardEls[dragState.id].style.zIndex=10;dragState=null;}
+  panState=null;pinchState=null;board.classList.remove('panning');
 }
-window.addEventListener('mouseup',  endAll);
-window.addEventListener('touchend', endAll);
-window.addEventListener('touchcancel', endAll);
+window.addEventListener('mouseup',endAll);
+window.addEventListener('touchend',endAll);
+window.addEventListener('touchcancel',endAll);
 
-// ═══════════════════════════════════════════════════
-// ZOOM — scroll
-// ═══════════════════════════════════════════════════
-board.addEventListener('wheel', e=>{
+board.addEventListener('wheel',e=>{
   e.preventDefault();
-  const factor = e.deltaY<0 ? 1.08 : 0.93;
-  panX = e.clientX - (e.clientX-panX)*factor;
-  panY = e.clientY - (e.clientY-panY)*factor;
-  zoom = Math.min(3, Math.max(0.15, zoom*factor));
+  const f=e.deltaY<0?1.08:0.93;
+  panX=e.clientX-(e.clientX-panX)*f;
+  panY=e.clientY-(e.clientY-panY)*f;
+  zoom=Math.min(3,Math.max(0.12,zoom*f));
   applyTransform();
 },{passive:false});
 
-// Reset duplo clique
-board.addEventListener('dblclick', e=>{
-  if(e.target===board||e.target===canvas){
-    zoom=0.68; panX=0; panY=0; applyTransform();
-  }
+board.addEventListener('dblclick',e=>{
+  if(e.target===board||e.target===canvas) centerLayout();
 });
+window.addEventListener('resize',()=>{resizeCanvas();draw();});
 
-// ═══════════════════════════════════════════════════
-// TRANSFORM / CANVAS
-// ═══════════════════════════════════════════════════
+// ═══════════════════ RENDER ═══════════════════════
 function applyTransform(){
-  scene.style.transform = `translate(${panX}px,${panY}px) scale(${zoom})`;
+  scene.style.transform=`translate(${panX}px,${panY}px) scale(${zoom})`;
   draw();
 }
 
 function resizeCanvas(){
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
 }
-window.addEventListener('resize',()=>{resizeCanvas(); draw();});
 resizeCanvas();
 
 function cardCenter(id){
-  const w = sizes[id]?.w||CARD_W;
-  const h = sizes[id]?.h||160;
-  return {
-    x: (pos[id].x + w/2)*zoom + panX,
-    y: (pos[id].y + h/2)*zoom + panY,
-  };
+  const w=sizes[id]?.w||CARD_W, h=sizes[id]?.h||160;
+  return{x:(pos[id].x+w/2)*zoom+panX, y:(pos[id].y+h/2)*zoom+panY};
 }
 
-// ═══════════════════════════════════════════════════
-// DRAW — barbantes com Bézier
-// ═══════════════════════════════════════════════════
 function hexRgb(h){
   h=h.replace('#','');
-  if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
-  return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];
+  if(h.length===3)h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];
 }
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
   EDGES.forEach(e=>{
-    const a=cardCenter(e.a), b=cardCenter(e.b);
-    if(!a||!b) return;
-
-    const dist = Math.hypot(b.x-a.x, b.y-a.y);
-    const sag  = Math.min(35*zoom, dist*0.09);
-    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2+sag;
-
+    const a=cardCenter(e.a),b=cardCenter(e.b);
+    if(!a||!b)return;
+    const dist=Math.hypot(b.x-a.x,b.y-a.y);
+    const sag=Math.min(30*zoom,dist*0.08);
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2+sag;
     const [r,g,bl]=hexRgb(e.color);
-    const lw = Math.max(0.8, e.w*zoom);
+    const lw=Math.max(0.7,e.w*zoom);
 
     // Sombra
     ctx.save();
-    ctx.strokeStyle='rgba(0,0,0,0.4)';
-    ctx.lineWidth=lw+2;
-    ctx.setLineDash([]);
-    ctx.beginPath();
-    ctx.moveTo(a.x+1.5,a.y+2.5);
-    ctx.quadraticCurveTo(mx+1.5,my+2.5,b.x+1.5,b.y+2.5);
-    ctx.stroke();
-    ctx.restore();
+    ctx.strokeStyle='rgba(0,0,0,0.38)';ctx.lineWidth=lw+2;ctx.setLineDash([]);
+    ctx.beginPath();ctx.moveTo(a.x+1.5,a.y+2.5);
+    ctx.quadraticCurveTo(mx+1.5,my+2.5,b.x+1.5,b.y+2.5);ctx.stroke();ctx.restore();
 
-    // Linha
+    // Barbante
     ctx.save();
-    ctx.strokeStyle=`rgb(${r},${g},${bl})`;
-    ctx.lineWidth=lw;
-    ctx.globalAlpha=0.85;
-    ctx.lineCap='round';
-    if(e.dash) ctx.setLineDash([Math.max(4,6*zoom), Math.max(3,4*zoom)]);
-    else       ctx.setLineDash([]);
-    ctx.beginPath();
-    ctx.moveTo(a.x,a.y);
-    ctx.quadraticCurveTo(mx,my,b.x,b.y);
-    ctx.stroke();
-    ctx.restore();
+    ctx.strokeStyle=`rgb(${r},${g},${bl})`;ctx.lineWidth=lw;
+    ctx.globalAlpha=0.86;ctx.lineCap='round';
+    ctx.setLineDash(e.dash?[Math.max(4,6*zoom),Math.max(3,4*zoom)]:[]);
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.quadraticCurveTo(mx,my,b.x,b.y);ctx.stroke();ctx.restore();
 
     // Seta
-    ctx.save();
-    ctx.globalAlpha=0.9;
-    ctx.fillStyle=`rgb(${r},${g},${bl})`;
-    const dx=b.x-mx, dy=b.y-my;
-    const len=Math.hypot(dx,dy)||1;
-    const ux=dx/len, uy=dy/len;
-    const sz=Math.max(5, 8*zoom);
-    ctx.beginPath();
-    ctx.moveTo(b.x,b.y);
-    ctx.lineTo(b.x-ux*sz+(-uy)*sz*0.5, b.y-uy*sz+ux*sz*0.5);
-    ctx.lineTo(b.x-ux*sz-(-uy)*sz*0.5, b.y-uy*sz-ux*sz*0.5);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
+    ctx.save();ctx.globalAlpha=0.92;ctx.fillStyle=`rgb(${r},${g},${bl})`;
+    const ddx=b.x-mx,ddy=b.y-my,len=Math.hypot(ddx,ddy)||1;
+    const ux=ddx/len,uy=ddy/len,sz=Math.max(5,8*zoom);
+    ctx.beginPath();ctx.moveTo(b.x,b.y);
+    ctx.lineTo(b.x-ux*sz-uy*sz*0.5,b.y-uy*sz+ux*sz*0.5);
+    ctx.lineTo(b.x-ux*sz+uy*sz*0.5,b.y-uy*sz-ux*sz*0.5);
+    ctx.closePath();ctx.fill();ctx.restore();
 
     // Label
     if(e.label){
-      const fs=Math.max(8, 9*zoom);
-      ctx.save();
-      ctx.font=`bold ${fs}px 'Courier New'`;
+      const fs=Math.max(8,9*zoom);
+      ctx.save();ctx.font=`bold ${fs}px 'Courier New'`;
       ctx.fillStyle='rgba(232,200,64,0.95)';
-      ctx.shadowColor='rgba(0,0,0,0.9)';
-      ctx.shadowBlur=3;
+      ctx.shadowColor='rgba(0,0,0,0.9)';ctx.shadowBlur=3;
       const tw=ctx.measureText(e.label).width;
-      ctx.fillText(e.label, mx-tw/2, my-6);
-      ctx.restore();
+      ctx.fillText(e.label,mx-tw/2,my-6);ctx.restore();
     }
   });
 }
 
-// ═══════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════
-requestAnimationFrame(()=>{
-  requestAnimationFrame(()=>{
-    measureSizes();
-    applyTransform();
-  });
-});
+// ═══════════════════ INIT ═════════════════════════
+requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  measureSizes();
+  centerLayout();
+}));
 </script>
 </body>
 </html>
