@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>MAPA DA REDE — BOLETO DDA</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#111;font-family:'Courier New',monospace;overflow:hidden;width:100vw;height:100vh;user-select:none;}
+
+/* ── CORK BOARD ── */
+#board{
+  width:100%;height:100%;position:relative;overflow:hidden;
+  background-color:#8B6418;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 25% 35%,rgba(120,80,10,.55) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 60% at 75% 65%,rgba(90,55,5,.5) 0%,transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Ccircle cx='1' cy='1' r='.7' fill='rgba(0,0,0,.07)'/%3E%3Ccircle cx='4' cy='4' r='.5' fill='rgba(255,255,255,.04)'/%3E%3Ccircle cx='5' cy='1' r='.4' fill='rgba(0,0,0,.05)'/%3E%3C/svg%3E");
+  cursor:grab;
+}
+#board.panning{cursor:grabbing;}
+
+/* ── CANVAS DE LINHAS ── */
+#rope-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;}
+
+/* ── SCENE (pan/zoom) ── */
+#scene{position:absolute;top:0;left:0;width:0;height:0;transform-origin:0 0;}
+
+/* ── CARTÕES ── */
+.card{
+  position:absolute;cursor:move;z-index:10;
+  transition:filter .12s;
+  /* tamanho definido via JS */
+}
+.card:hover{z-index:50;filter:brightness(1.06);}
+.card:active{z-index:100;}
+
+.card-body{
+  position:relative;padding:9px 10px 11px;
+  border:1.5px solid rgba(0,0,0,.25);
+  box-shadow:3px 5px 14px rgba(0,0,0,.55),inset 0 0 8px rgba(255,255,255,.06);
+}
+/* Pino */
+.card-body::before{
+  content:'';width:13px;height:13px;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#eee 0%,#888 100%);
+  box-shadow:0 2px 5px rgba(0,0,0,.5);
+  position:absolute;top:-7px;left:50%;transform:translateX(-50%);z-index:5;
+}
+.card.itev    .card-body{background:#1a1a2e;border-color:#e94560;}
+.card.empresa .card-body{background:#fdf4e0;border-color:#c8843a;}
+.card.pessoa  .card-body{background:#eef2ff;border-color:#5577cc;}
+.card.banco   .card-body{background:#efffef;border-color:#3a9a5c;}
+.card.evidencia .card-body{background:#fff0f0;border-color:#cc3333;}
+.card.nota    .card-body{background:#fffde7;border-color:#bba030;transform:rotate(-1.8deg);font-style:italic;}
+
+.card-avatar{width:100%;height:40px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(0,0,0,.15);margin-bottom:4px;background:rgba(0,0,0,.06);font-size:22px;}
+.card.itev .card-avatar{background:#12122a;border-color:#e94560;}
+.card-tipo{font-size:7px;font-weight:bold;text-transform:uppercase;letter-spacing:1.2px;color:#999;margin-bottom:2px;}
+.card.itev .card-tipo{color:#e94560;}
+.card.evidencia .card-tipo{color:#cc3333;}
+.card-nome{font-size:10.5px;font-weight:bold;line-height:1.35;color:#1a1a2e;margin-bottom:3px;}
+.card.itev .card-nome{color:#fff;font-size:12px;}
+.card-cnpj{font-size:7.5px;color:#777;margin-bottom:4px;font-family:'Courier New',monospace;}
+.card.itev .card-cnpj{color:#aaa;}
+.card-info{font-size:8.5px;color:#333;line-height:1.55;}
+.card.itev .card-info{color:#ddd;}
+.card.evidencia .card-info{color:#990000;font-weight:bold;}
+.card.nota .card-info{color:#555;font-size:9px;}
+.tags{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px;}
+.tag{font-size:7px;font-weight:bold;padding:1px 5px;border-radius:10px;letter-spacing:.5px;}
+.tag.red   {background:#e94560;color:#fff;}
+.tag.orange{background:#e08030;color:#fff;}
+.tag.blue  {background:#4466cc;color:#fff;}
+.tag.green {background:#3a9a5c;color:#fff;}
+.tag.dark  {background:#1a1a2e;color:#e94560;border:1px solid #e94560;}
+
+/* ── TOPBAR ── */
+#topbar{
+  position:fixed;top:10px;left:50%;transform:translateX(-50%);
+  background:rgba(10,5,2,.9);border:1.5px solid #e94560;
+  padding:6px 22px;color:#e94560;font-size:11px;font-weight:bold;
+  letter-spacing:2.5px;text-transform:uppercase;z-index:200;
+  box-shadow:0 0 20px rgba(233,69,96,.3);white-space:nowrap;
+}
+
+/* ── HELP ── */
+#help{
+  position:fixed;bottom:12px;left:12px;
+  background:rgba(10,5,2,.82);border:1px solid #8B6418;
+  padding:8px 12px;color:#bbb;font-size:8.5px;z-index:200;
+  border-radius:3px;line-height:1.8;
+}
+#help b{color:#e8c040;}
+
+/* ── LEGENDA ── */
+#legend{
+  position:fixed;bottom:12px;right:12px;
+  background:rgba(10,5,2,.82);border:1px solid #8B6418;
+  padding:8px 13px;color:#ccc;font-size:8.5px;z-index:200;
+  border-radius:3px;line-height:1.9;
+}
+#legend b{color:#e8c040;}
+
+/* ── COLLISION FLASH ── */
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+.card.collide{animation:shake .15s ease;}
+</style>
+</head>
+<body>
+
+<div id="topbar">🔴 OPERAÇÃO DDA — MAPA DA REDE DE FATURAMENTO FANTASMA</div>
+<div id="help">
+  <b>Controles:</b><br>
+  🖱 Arrastar cartão — mover<br>
+  🖱 Arrastar fundo — panorâmica<br>
+  ⚙ Scroll — zoom in/out<br>
+  🔄 Duplo clique no fundo — resetar
+</div>
+<div id="legend">
+  <b>LEGENDA:</b><br>
+  <span style="color:#e94560">━━</span> Conexão operacional<br>
+  <span style="color:#4466cc">━━</span> Vínculo societário/WHOIS<br>
+  <span style="color:#e8c040">╌╌</span> Registro simultâneo<br>
+  <span style="color:#ffffff">┄┄</span> Infra compartilhada<br>
+  <span style="color:#3a9a5c">┄┄</span> Banco emissor<br>
+  <span style="color:#e08030">╌╌</span> Indício de ligação
+</div>
+
+<div id="board">
+  <canvas id="rope-canvas"></canvas>
+  <div id="scene"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// DADOS
+// ═══════════════════════════════════════════════════════════
+const CARD_W = 170, CARD_H_BASE = 175;
+
+const NODES = [
+  {id:'itev',type:'itev',emoji:'🧠',
+   nome:'ITEV',tipo_label:'EMPRESA-MÃE SUSPEITA',
+   cnpj:'CNPJ: 13.929.711/0001-97',
+   info:['Sócio: Osmar Alves Nascimento','Desde 2011 (14 anos)','2.548 recl. históricas','★ dealAgain: 2,2%'],
+   tags:[{t:'MATRIZ',c:'red'},{t:'14 ANOS',c:'dark'}],
+   x:720,y:310},
+
+  {id:'sesnat',type:'empresa',emoji:'💸',
+   nome:'SESNAT NACIONAL',tipo_label:'EMPRESA EMISSORA',
+   cnpj:'CNPJ: 52.370.136/0001-97',
+   info:['Sócia: Jamilly Firmino','BH/MG • Set/2023','1.616 recl. (6m)','Instagram: 0 posts🔴'],
+   tags:[{t:'VPS COMUM',c:'red'},{t:'COWORKING',c:'orange'}],
+   x:320,y:130},
+
+  {id:'storehost',type:'empresa',emoji:'🌐',
+   nome:'STOREHOST BRASIL',tipo_label:'EMPRESA EMISSORA',
+   cnpj:'CNPJ: 49.003.392/0001-31',
+   info:['Sócia: Maria Eduarda S. Felipe','BH/MG • Dez/2022','3.850 recl. (6m)🔴','dealAgain: 4,4%'],
+   tags:[{t:'VPS COMUM',c:'red'},{t:'CASO ESCOLA',c:'orange'}],
+   x:320,y:390},
+
+  {id:'speed',type:'empresa',emoji:'⚡',
+   nome:'SPEED TECNET\n/ CLAVE / TRN',tipo_label:'EMPRESA EMISSORA',
+   cnpj:'CNPJ: 47.638.307/0001-86',
+   info:['Sócio: Leandro da Silva Rocha','SP • Ago/2022','3.341 recl. (6m)','4 nomes, 1 CNPJ🔴'],
+   tags:[{t:'VPS COMUM',c:'red'},{t:'REBRANDING',c:'orange'}],
+   x:320,y:660},
+
+  {id:'sebracom',type:'empresa',emoji:'📋',
+   nome:'SEBRACOM\nEMPRESARIAL',tipo_label:'EMPRESA EMISSORA',
+   cnpj:'CNPJ: 37.536.531/0001-03',
+   info:['Admin: Ivete Lepinsk','SP • 2007 (18 anos)','8.494 recl. hist.🔴','Imita SEBRAE'],
+   tags:[{t:'MAIS ANTIGA',c:'orange'},{t:'NOME ENGANOSO',c:'red'}],
+   x:1120,y:130},
+
+  {id:'bib',type:'empresa',emoji:'💼',
+   nome:'BIB SOLUÇÕES\nFINANCEIRAS',tipo_label:'EMPRESA EMISSORA',
+   cnpj:'CNPJ: 40.099.029/0001-97',
+   info:['SP • Dez/2020','141 recl. (6m)','Sócio: não identificado','Banco Sofisa (único)'],
+   tags:[{t:'BANCO DIFERENTE',c:'blue'}],
+   x:1120,y:390},
+
+  {id:'colloca',type:'empresa',emoji:'👥',
+   nome:'COLLOCA RH',tipo_label:'EMPRESA EMISSORA',
+   cnpj:'CNPJ: 07.067.821/0001-94',
+   info:['Sócia: Cristina Colloca','SP • Out/2004','1.684 recl. (6m)','Ticket: R$1.287🔴'],
+   tags:[{t:'TEL 4570 COMUM',c:'blue'}],
+   x:1120,y:660},
+
+  // Pessoas
+  {id:'jamilly',type:'pessoa',emoji:'👤',
+   nome:'JAMILLY FIRMINO',tipo_label:'PESSOA FÍSICA — RF+WHOIS',cnpj:'',
+   info:['Sócia-Admin: SESNAT','WHOIS sesnat.com.br','jamillyfirmino04@gmail.com','Reg: 20/05/2025'],
+   tags:[{t:'CONFIRMADA',c:'blue'}],x:60,y:60},
+
+  {id:'mariaedu',type:'pessoa',emoji:'👤',
+   nome:'MARIA EDUARDA\nSCALIONI FELIPE',tipo_label:'PESSOA FÍSICA — RF+WHOIS',cnpj:'',
+   info:['Sócia-Admin: STOREHOST','WHOIS storehost.com.br','mariaeduardastorehost\n@gmail.com'],
+   tags:[{t:'CONFIRMADA',c:'blue'}],x:60,y:330},
+
+  {id:'leandro',type:'pessoa',emoji:'👤',
+   nome:'LEANDRO\nSILVA ROCHA',tipo_label:'PESSOA FÍSICA — RF+WHOIS',cnpj:'',
+   info:['Sócio-Admin: SPEED TECNET','WHOIS speedtecnet.com.br','leandrotrnrocha@gmail.com'],
+   tags:[{t:'CONFIRMADA',c:'blue'}],x:60,y:590},
+
+  {id:'nelson',type:'pessoa',emoji:'❓',
+   nome:'NELSON MIYAHARA',tipo_label:'⚠ SEM CNPJ NA RF',cnpj:'',
+   info:['WHOIS: claveinternet.com.br','nelsonmkma@gmail.com','NÃO encontrado na RF','→ Possível laranja'],
+   tags:[{t:'IDENTIDADE OCULTA',c:'red'},{t:'PRIO. MP',c:'dark'}],
+   x:60,y:830},
+
+  {id:'osmar',type:'pessoa',emoji:'👤',
+   nome:'OSMAR ALVES\nNASCIMENTO',tipo_label:'OPERADOR CENTRAL',cnpj:'',
+   info:['Sócio-Admin: ITEV','WHOIS itev.com.br','contato@itev.com.br','Operador desde 2011'],
+   tags:[{t:'OPERADOR CENTRAL',c:'dark'}],x:720,y:80},
+
+  {id:'ivete',type:'pessoa',emoji:'👤',
+   nome:'IVETE LEPINSK',tipo_label:'PESSOA FÍSICA — RF',cnpj:'',
+   info:['Admin: SEBRACOM','Foro: Juiz de Fora/MG','Citada em processos'],
+   tags:[{t:'IDENTIFICADA',c:'blue'}],x:1370,y:80},
+
+  // Bancos
+  {id:'bradesco',type:'banco',emoji:'🏦',
+   nome:'BANCO BRADESCO S.A.',tipo_label:'BANCO EMISSOR',cnpj:'',
+   info:['4 carteiras do grupo','Res. CMN 4.949/2021','Súm 479 STJ resp. obj.','MED/MDE sem resultado'],
+   tags:[{t:'4 CARTEIRAS',c:'orange'},{t:'RESPONSÁVEL',c:'green'}],
+   x:720,y:900},
+
+  {id:'sofisa',type:'banco',emoji:'🏦',
+   nome:'BANCO SOFISA S.A.',tipo_label:'BANCO EMISSOR',cnpj:'',
+   info:['Carteira: BIB Soluções','Único banco diferente'],
+   tags:[{t:'1 CARTEIRA',c:'green'}],x:1120,y:900},
+
+  // Evidências
+  {id:'vps',type:'evidencia',emoji:'🖥',
+   nome:'SERVIDOR VPS\n45.77.113.194',tipo_label:'EVIDÊNCIA TÉCNICA #1',
+   cnpj:'Reverse: cloud.paineldehospedagem.com.br',
+   info:['SESNAT + STOREHOST +\nSPEED TECNET + CLAVE','Mesmo IP físico','→ PROVA MAIS FORTE'],
+   tags:[{t:'INFRA COMPARTILHADA',c:'red'}],x:530,y:490},
+
+  {id:'regdata',type:'evidencia',emoji:'📅',
+   nome:'REGISTRO\n20/05/2025',tipo_label:'EVIDÊNCIA TÉCNICA #2',
+   cnpj:'Registrador: HSTDOMAINS (Hostinger)',
+   info:['sesnat.com.br','storehost.com.br','NS: johnathan+sierra.cf'],
+   tags:[{t:'LANÇAMENTO EM LOTE',c:'red'}],x:320,y:260},
+
+  {id:'escola',type:'nota',emoji:'🏫',
+   nome:'CASO DA ESCOLA\nMUNICIPAL',tipo_label:'CASO GRAVE — mai/2026',cnpj:'',
+   info:['"Sou presidente da APP\nda escola municipal —\nlevamos um golpe."\n— Storehost, mai/2026\n★ Dinheiro de pais\n★ URL removida do RA'],
+   tags:[{t:'DINHEIRO PÚBLICO',c:'red'},{t:'EVIDÊNCIA REMOVIDA',c:'dark'}],
+   x:520,y:700},
+
+  {id:'zerada',type:'nota',emoji:'🏛',
+   nome:'CONTA SEM SALDO\nMED/MDE jan/2026',tipo_label:'EVIDÊNCIA FINANCEIRA',cnpj:'',
+   info:['Vítima pagou R$754,69\nItaú abriu MED/MDE\nConta STOREHOST ZERADA\n→ Valores transferidos\nimediatamente'],
+   tags:[{t:'CONTA LARANJA?',c:'red'}],x:530,y:850},
+
+  {id:'instagram',type:'nota',emoji:'📱',
+   nome:'ALIBI FALSO\nINSTAGRAM',tipo_label:'PROVA DE MENTIRA',cnpj:'',
+   info:['@sesnat_nacional:\n1 seguidor • 0 posts\n\nAlegam captação via\nanúncios nas redes\n→ IMPOSSÍVEL'],
+   tags:[{t:'ALIBI REFUTADO',c:'red'}],x:320,y:20},
+];
+
+const EDGES = [
+  {a:'osmar',b:'itev',       label:'sócio-admin',   color:'#4466cc',dash:false,w:2.5},
+  {a:'itev', b:'sesnat',     label:'produto ITEV',   color:'#e94560',dash:false,w:3},
+  {a:'itev', b:'speed',      label:'resp. RA cruzado',color:'#e94560',dash:false,w:3},
+  {a:'itev', b:'sebracom',   label:'foro JF/MG',     color:'#e94560',dash:true, w:1.5},
+  {a:'itev', b:'storehost',  label:'texto idêntico',  color:'#e94560',dash:true, w:1.5},
+  {a:'itev', b:'colloca',    label:'texto idêntico',  color:'#e94560',dash:true, w:1.5},
+  {a:'vps',  b:'sesnat',     label:'mesmo IP',       color:'#ffffff',dash:true, w:1.5},
+  {a:'vps',  b:'storehost',  label:'mesmo IP',       color:'#ffffff',dash:true, w:1.5},
+  {a:'vps',  b:'speed',      label:'mesmo IP',       color:'#ffffff',dash:true, w:1.5},
+  {a:'regdata',b:'sesnat',   label:'20/05/2025',     color:'#e8c040',dash:false,w:2.5},
+  {a:'regdata',b:'storehost',label:'20/05/2025',     color:'#e8c040',dash:false,w:2.5},
+  {a:'jamilly',b:'sesnat',   label:'sócia+WHOIS',    color:'#4080ff',dash:false,w:1.5},
+  {a:'mariaedu',b:'storehost',label:'sócia+WHOIS',   color:'#4080ff',dash:false,w:1.5},
+  {a:'leandro',b:'speed',    label:'sócio+WHOIS',    color:'#4080ff',dash:false,w:1.5},
+  {a:'nelson', b:'speed',    label:'WHOIS clave',    color:'#ff6060',dash:true, w:1.5},
+  {a:'ivete',  b:'sebracom', label:'admin',          color:'#4080ff',dash:false,w:1.5},
+  {a:'bradesco',b:'sesnat',  label:'',               color:'#3a9a5c',dash:true, w:1},
+  {a:'bradesco',b:'storehost',label:'',              color:'#3a9a5c',dash:true, w:1},
+  {a:'bradesco',b:'speed',   label:'',               color:'#3a9a5c',dash:true, w:1},
+  {a:'bradesco',b:'sebracom',label:'',               color:'#3a9a5c',dash:true, w:1},
+  {a:'sofisa', b:'bib',      label:'',               color:'#3a9a5c',dash:true, w:1},
+  {a:'speed',  b:'colloca',  label:'tel. 4570 comum',color:'#e08030',dash:true, w:2},
+  {a:'escola', b:'storehost',label:'vítima mai/2026',color:'#cc3333',dash:false,w:2},
+  {a:'zerada', b:'storehost',label:'conta zerada',   color:'#cc3333',dash:false,w:2},
+  {a:'instagram',b:'sesnat', label:'alibi falso',    color:'#cc3333',dash:false,w:2},
+];
+
+// ═══════════════════════════════════════════════════════════
+// ESTADO
+// ═══════════════════════════════════════════════════════════
+let zoom = 0.70, panX = 0, panY = 0;
+const pos = {};   // id → {x, y}  (coords na scene)
+const sizes = {}; // id → {w, h}  (tamanho real do card)
+NODES.forEach(n => { pos[n.id] = {x: n.x, y: n.y}; });
+
+// ═══════════════════════════════════════════════════════════
+// DOM
+// ═══════════════════════════════════════════════════════════
+const board  = document.getElementById('board');
+const scene  = document.getElementById('scene');
+const canvas = document.getElementById('rope-canvas');
+const ctx    = canvas.getContext('2d');
+const cardEls = {};
+
+NODES.forEach(n => {
+  const div = document.createElement('div');
+  div.className = `card ${n.type}`;
+  div.id = 'card_' + n.id;
+  div.style.cssText = `left:${n.x}px;top:${n.y}px;width:${CARD_W}px;`;
+
+  const tagsHtml = (n.tags||[]).map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('');
+  div.innerHTML = `
+    <div class="card-body">
+      <div class="card-avatar">${n.emoji}</div>
+      <div class="card-tipo">${n.tipo_label}</div>
+      <div class="card-nome">${n.nome.replace(/\n/g,'<br>')}</div>
+      ${n.cnpj?`<div class="card-cnpj">${n.cnpj}</div>`:''}
+      <div class="card-info">${n.info.join('<br>').replace(/\n/g,'<br>')}</div>
+      <div class="tags">${tagsHtml}</div>
+    </div>`;
+
+  scene.appendChild(div);
+  cardEls[n.id] = div;
+});
+
+// Medir tamanhos reais após renderização
+function measureSizes() {
+  NODES.forEach(n => {
+    const el = cardEls[n.id];
+    sizes[n.id] = { w: el.offsetWidth, h: el.offsetHeight };
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRAG — CARTÃO
+// Importante: o drag do cartão NÃO propaga para o board,
+// então arrastar fundo e arrastar cartão são independentes.
+// ═══════════════════════════════════════════════════════════
+let dragState = null; // {id, ox, oy}
+
+function cardMouseDown(id, e) {
+  if (e.button !== 0) return;
+  e.stopPropagation(); // ← impede que o board interprete como pan
+  dragState = {
+    id,
+    ox: (e.clientX - panX) / zoom - pos[id].x,
+    oy: (e.clientY - panY) / zoom - pos[id].y,
+  };
+  cardEls[id].style.zIndex = 100;
+  e.preventDefault();
+}
+
+NODES.forEach(n => {
+  cardEls[n.id].addEventListener('mousedown', e => cardMouseDown(n.id, e));
+});
+
+// ═══════════════════════════════════════════════════════════
+// PAN — FUNDO
+// Só activa se o mousedown foi no board (não num cartão)
+// ═══════════════════════════════════════════════════════════
+let panState = null; // {ox, oy}
+
+board.addEventListener('mousedown', e => {
+  // Só inicia pan se clicou num elemento que é o board ou o canvas
+  // (não num cartão, pois stopPropagation acima impede)
+  if (e.button !== 0) return;
+  panState = { ox: e.clientX - panX, oy: e.clientY - panY };
+  board.classList.add('panning');
+});
+
+// ═══════════════════════════════════════════════════════════
+// MOUSEMOVE GLOBAL
+// ═══════════════════════════════════════════════════════════
+window.addEventListener('mousemove', e => {
+  if (dragState) {
+    const id = dragState.id;
+    const newX = (e.clientX - panX) / zoom - dragState.ox;
+    const newY = (e.clientY - panY) / zoom - dragState.oy;
+    moveTo(id, newX, newY, true); // com checagem de colisão
+    draw();
+    return;
+  }
+  if (panState) {
+    panX = e.clientX - panState.ox;
+    panY = e.clientY - panState.oy;
+    applyTransform();
+  }
+});
+
+window.addEventListener('mouseup', () => {
+  if (dragState) {
+    cardEls[dragState.id].style.zIndex = 10;
+    dragState = null;
+  }
+  if (panState) {
+    panState = null;
+    board.classList.remove('panning');
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// ZOOM — scroll
+// ═══════════════════════════════════════════════════════════
+board.addEventListener('wheel', e => {
+  e.preventDefault();
+  const factor = e.deltaY < 0 ? 1.08 : 0.93;
+  const mx = e.clientX, my = e.clientY;
+  panX = mx - (mx - panX) * factor;
+  panY = my - (my - panY) * factor;
+  zoom = Math.min(2.5, Math.max(0.2, zoom * factor));
+  applyTransform();
+}, {passive: false});
+
+// Reset duplo-clique no FUNDO
+board.addEventListener('dblclick', e => {
+  if (e.target === board || e.target === canvas) {
+    zoom = 0.70; panX = 0; panY = 0;
+    applyTransform();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// COLISÃO — evita sobreposição
+// ═══════════════════════════════════════════════════════════
+const PADDING = 12; // margem extra entre cartões
+
+function rectsOverlap(ax,ay,aw,ah, bx,by,bw,bh) {
+  return ax < bx+bw+PADDING && ax+aw+PADDING > bx &&
+         ay < by+bh+PADDING && ay+ah+PADDING > by;
+}
+
+function resolveCollision(id, nx, ny) {
+  const sw = sizes[id]?.w || CARD_W;
+  const sh = sizes[id]?.h || CARD_H_BASE;
+
+  for (const otherId in pos) {
+    if (otherId === id) continue;
+    const ox = pos[otherId].x, oy = pos[otherId].y;
+    const ow = sizes[otherId]?.w || CARD_W;
+    const oh = sizes[otherId]?.h || CARD_H_BASE;
+
+    if (rectsOverlap(nx,ny,sw,sh, ox,oy,ow,oh)) {
+      // Calcular deslocamento para afastar
+      const cx1 = nx + sw/2, cy1 = ny + sh/2;
+      const cx2 = ox + ow/2, cy2 = oy + oh/2;
+      let dx = cx1 - cx2, dy = cy1 - cy2;
+      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      dx /= dist; dy /= dist;
+
+      // Overlap amount
+      const overlapX = (sw/2 + ow/2 + PADDING) - Math.abs(cx1-cx2);
+      const overlapY = (sh/2 + oh/2 + PADDING) - Math.abs(cy1-cy2);
+
+      // Push pelo eixo de menor overlap
+      if (overlapX < overlapY) {
+        nx += dx > 0 ? overlapX : -overlapX;
+      } else {
+        ny += dy > 0 ? overlapY : -overlapY;
+      }
+
+      // Flash visual no card empurrado
+      const el = cardEls[otherId];
+      el.classList.add('collide');
+      setTimeout(() => el.classList.remove('collide'), 200);
+    }
+  }
+  return {x: nx, y: ny};
+}
+
+function moveTo(id, nx, ny, checkCollision) {
+  if (checkCollision) {
+    const resolved = resolveCollision(id, nx, ny);
+    nx = resolved.x; ny = resolved.y;
+  }
+  pos[id] = {x: nx, y: ny};
+  cardEls[id].style.left = nx + 'px';
+  cardEls[id].style.top  = ny + 'px';
+}
+
+// ═══════════════════════════════════════════════════════════
+// TRANSFORM / CANVAS
+// ═══════════════════════════════════════════════════════════
+function applyTransform() {
+  scene.style.transform = `translate(${panX}px,${panY}px) scale(${zoom})`;
+  resizeCanvas();
+  draw();
+}
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', () => { resizeCanvas(); draw(); });
+resizeCanvas();
+
+// Centro de um cartão (em coords de viewport)
+function center(id) {
+  const el = cardEls[id];
+  const w  = sizes[id]?.w || CARD_W;
+  const h  = (sizes[id]?.h || CARD_H_BASE);
+  return {
+    x: (pos[id].x + w/2) * zoom + panX,
+    y: (pos[id].y + h/2) * zoom + panY,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRAW — barbantes
+// ═══════════════════════════════════════════════════════════
+function hexToRgb(h) {
+  const r = parseInt(h.slice(1,3),16),
+        g = parseInt(h.slice(3,5),16),
+        b = parseInt(h.slice(5,7),16);
+  return [r,g,b];
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  EDGES.forEach(e => {
+    const a = center(e.a), b = center(e.b);
+    if (!a || !b) return;
+
+    // Bézier com arco leve para simular barbante
+    const dist = Math.hypot(b.x-a.x, b.y-a.y);
+    const sag  = Math.min(40, dist * 0.10);
+    const mx = (a.x+b.x)/2, my = (a.y+b.y)/2 + sag;
+
+    // Sombra
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+    ctx.lineWidth   = (e.w||1.5) + 2;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(a.x+1, a.y+2);
+    ctx.quadraticCurveTo(mx+1, my+2, b.x+1, b.y+2);
+    ctx.stroke();
+    ctx.restore();
+
+    // Barbante
+    const [r,g,bb2] = hexToRgb(e.color);
+    ctx.save();
+    ctx.strokeStyle = `rgb(${r},${g},${bb2})`;
+    ctx.lineWidth   = e.w || 1.5;
+    ctx.globalAlpha = 0.82;
+    ctx.setLineDash(e.dash ? [6,4] : []);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(a.x, a.y);
+    ctx.quadraticCurveTo(mx, my, b.x, b.y);
+    ctx.stroke();
+    ctx.restore();
+
+    // Seta no ponto B
+    ctx.save();
+    ctx.globalAlpha = 0.85;
+    const dx = b.x - mx, dy = b.y - my;
+    const len = Math.hypot(dx,dy)||1;
+    const ux=dx/len, uy=dy/len;
+    const sz = 7*(e.w||1.5)/2;
+    const px = b.x - ux*sz, py = b.y - uy*sz;
+    const nx2 = -uy, ny2 = ux;
+    ctx.fillStyle = e.color;
+    ctx.beginPath();
+    ctx.moveTo(b.x,b.y);
+    ctx.lineTo(px+nx2*sz*0.55, py+ny2*sz*0.55);
+    ctx.lineTo(px-nx2*sz*0.55, py-ny2*sz*0.55);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+
+    // Label
+    if (e.label) {
+      ctx.save();
+      ctx.font = 'bold 8px Courier New';
+      ctx.fillStyle = 'rgba(230,200,60,0.92)';
+      ctx.shadowColor = 'rgba(0,0,0,0.8)';
+      ctx.shadowBlur = 3;
+      const tw = ctx.measureText(e.label).width;
+      ctx.fillText(e.label, mx - tw/2, my - 7);
+      ctx.restore();
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// INICIALIZA
+// ═══════════════════════════════════════════════════════════
+// Precisa de um tick para os cards renderizarem e podermos medir
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    measureSizes();
+    applyTransform();
+  });
+});
+</script>
+</body>
+</html>
